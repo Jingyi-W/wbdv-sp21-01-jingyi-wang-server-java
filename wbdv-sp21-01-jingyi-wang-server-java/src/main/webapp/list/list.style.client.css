@@ -1,0 +1,31 @@
+body {
+  background-color: ghostwhite;
+}
+
+.zero-margin {
+  margin:0;
+}
+
+.xlarge-font-size {
+  font-size: x-large;
+}
+
+.large-font-size {
+  font-size: large;
+}
+
+.white-color {
+  color: white;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
+}
