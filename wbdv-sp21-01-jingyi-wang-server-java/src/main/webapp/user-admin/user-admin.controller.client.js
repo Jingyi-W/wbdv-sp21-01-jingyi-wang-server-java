@@ -4,24 +4,56 @@ var $firstNameFld
 var $lastNameFld
 var $roleFld
 var theTableBody
-var users = [
-  // {username: 'tlee', password: '', firstName: 'Tim', lastName: 'Birns Lee', role: 'FACULTY'},
-  // {username: 'alovelace', password: '', firstName: 'Ada', lastName: 'Lovelace', role: 'FACULTY'},
-  // {username: 'cgarcia', password: '', firstName: 'Charlie', lastName: 'Garcia', role: 'FACULTY'},
-  // {username: 'dcraig', password: '', firstName: 'Dan', lastName: 'Craig', role: 'FACULTY'},
-  // {username: 'sbolivar', password: '', firstName: 'Simon', lastName: 'Boliver', role: 'FACULTY'}
-]
+var users = []
 var $createBtn
+var $updateBtn
+var $searchBtn
+var adminUserService = new AdminUserServiceClient()
 
 function createUser(user) {
-  users.push(user)
-  renderUsers(users)
+  adminUserService.createUser(user).then(function(actualUser){
+    users.push(actualUser)
+    renderUsers(users)
+  })
 }
-function deleteCourse(event) {
+function deleteUser(event) {
   var rmClicked = jQuery(event.target)
-  users.splice(rmClicked.attr("id"), 1)
-  renderUsers(users)
+  var theIdx = rmClicked.attr("id")
+  var theId = users[theIdx]._id
+  adminUserService.deleteUser(theId).then(function(status){
+    users.splice(rmClicked.attr("id"), 1)
+    renderUsers(users)
+  })
 }
+var selectedUser = null
+function selectUser(event) {
+  var selectClicked = jQuery(event.target)
+  var theIdx = selectClicked.attr("id")
+  selectedUser = users[theIdx]
+  $usernameFld.val(selectedUser.username)
+  $passwordFld.val(selectedUser.password)
+  $firstNameFld.val(selectedUser.firstName)
+  $lastNameFld.val(selectedUser.lastName)
+  $roleFld.val(selectedUser.role)
+}
+function updateUser() {
+  selectedUser.username = $usernameFld.val()
+  selectedUser.password = $passwordFld.val()
+  selectedUser.firstName = $firstNameFld.val()
+  selectedUser.lastName = $lastNameFld.val()
+  selectedUser.role = $roleFld.val()
+  adminUserService.updateUser(selectedUser._id, selectedUser).then(function(status) {
+    var theIdx = users.findIndex(user => user._id === selectedUser._id)
+    users[theIdx] = selectedUser
+    renderUsers(users)
+  })
+}
+// function findUserById(userId) {
+//   var inputedUserId = $usernameFld.val()
+//   adminUserService.findUserById(inputedUserId)
+//
+// }
+
 
 function renderUsers(users) {
   theTableBody.empty()
@@ -42,7 +74,8 @@ function renderUsers(users) {
         </td>
       </tr>`)
   }
-  jQuery(".wbdv-remove").click(deleteCourse)
+  jQuery(".wbdv-remove").click(deleteUser)
+  jQuery(".wbdv-edit").click(selectUser)
 }
 
 
@@ -52,8 +85,12 @@ function main() {
   $firstNameFld = $(".firstNameFld")
   $lastNameFld = $(".lastNameFld")
   $roleFld = $(".roleFld")
-  $createBtn = $("button.createBtn")
+
   theTableBody = jQuery("tbody")
+
+  $createBtn = $("button.createBtn")
+  $updateBtn = $("button.updateBtn")
+  $searchBtn = $("button.searchBtn")
 
   $createBtn.click(function () {
     var newCourse = {
@@ -68,6 +105,13 @@ function main() {
     $passwordFld.val("")
     $firstNameFld.val("")
     $lastNameFld.val("")
+  })
+  $updateBtn.click(updateUser)
+  $searchBtn.click(findUserById)
+
+  adminUserService.findAllUsers().then(function (actualUsersFromServer) {
+    users = actualUsersFromServer
+    renderUsers(users)
   })
 }
 jQuery(main)
