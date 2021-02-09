@@ -3,7 +3,7 @@ var $passwordFld
 var $firstNameFld
 var $lastNameFld
 var $roleFld
-var theTableBody
+var $theTableBody
 var users = []
 var $createBtn
 var $updateBtn
@@ -52,18 +52,25 @@ function updateUser() {
   $firstNameFld.val("")
   $lastNameFld.val("")
 }
-function findUserByUsername(username) {
+var userToBeFound
+function findUserById(theId) {
+  adminUserService.findUserById(theId).then(function(userFound) {
+    userToBeFound = userFound
+  })
+}
+function findUserByUsername() {
   var inputedUsername = $usernameFld.val()
   var theIdx = users.findIndex(user => user.username === inputedUsername)
-  $(theTableBody[0]['rows'][theIdx]).addClass('table-primary')
+  $($($theTableBody[0]['rows']).filter(idx => idx != theIdx)).removeClass('table-primary')
+  $($theTableBody[0]['rows'][theIdx]).addClass('table-primary')
 }
 
 
 function renderUsers(users) {
-  theTableBody.empty()
+  $theTableBody.empty()
   for (var i = 0; i < users.length; i++) {
     var user = users[i]
-    theTableBody.append(`
+    $theTableBody.append(`
       <tr class="wbdv-template wbdv-user wbdv-hidden">
         <td class="wbdv-username">${user.username}</td>
         <td>&nbsp;</td>
@@ -90,7 +97,7 @@ function main() {
   $lastNameFld = $(".lastNameFld")
   $roleFld = $(".roleFld")
 
-  theTableBody = jQuery("tbody")
+  $theTableBody = jQuery("tbody")
 
   $createBtn = $("button.createBtn")
   $updateBtn = $("button.updateBtn")
