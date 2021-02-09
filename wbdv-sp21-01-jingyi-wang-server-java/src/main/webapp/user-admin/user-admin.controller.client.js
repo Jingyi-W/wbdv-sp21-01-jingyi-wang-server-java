@@ -47,12 +47,16 @@ function updateUser() {
     users[theIdx] = selectedUser
     renderUsers(users)
   })
+  $usernameFld.val("")
+  $passwordFld.val("")
+  $firstNameFld.val("")
+  $lastNameFld.val("")
 }
-// function findUserById(userId) {
-//   var inputedUserId = $usernameFld.val()
-//   adminUserService.findUserById(inputedUserId)
-//
-// }
+function findUserByUsername(username) {
+  var inputedUsername = $usernameFld.val()
+  var theIdx = users.findIndex(user => user.username === inputedUsername)
+  $(theTableBody[0]['rows'][theIdx]).addClass('table-primary')
+}
 
 
 function renderUsers(users) {
@@ -93,21 +97,21 @@ function main() {
   $searchBtn = $("button.searchBtn")
 
   $createBtn.click(function () {
-    var newCourse = {
+    var newUser = {
       username: $usernameFld.val(),
       password: $passwordFld.val(),
       firstName: $firstNameFld.val(),
       lastName: $lastNameFld.val(),
       role: $roleFld.val()
     }
-    createUser(newCourse)
+    createUser(newUser)
     $usernameFld.val("")
     $passwordFld.val("")
     $firstNameFld.val("")
     $lastNameFld.val("")
   })
   $updateBtn.click(updateUser)
-  $searchBtn.click(findUserById)
+  $searchBtn.click(findUserByUsername)
 
   adminUserService.findAllUsers().then(function (actualUsersFromServer) {
     users = actualUsersFromServer
