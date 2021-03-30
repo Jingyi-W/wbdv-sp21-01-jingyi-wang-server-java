@@ -1,10 +1,21 @@
 package com.example.wbdvsp2101jingyiwangserverjava.models;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="widgets")
 public class Widget {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   private String widgetName;
   private String topicId;
-  private Long id;
   private String type;
   private Integer widgetOrder;
   private String text;
@@ -14,16 +25,14 @@ public class Widget {
   private String cssClass;
   private String style;
   private String value;
+  private Boolean isOrderedList;
 
-  public Widget() {
-  }
-
-  public Widget(String widgetName, String topicId, Long id, String type, Integer widgetOrder,
-      String text, String url, Integer size, Integer width, Integer height, String cssClass,
-      String style, String value) {
+  public Widget(Long id, String widgetName, String topicId, String type,
+      Integer widgetOrder, String text, String url, Integer size, Integer width,
+      Integer height, String cssClass, String style, String value, Boolean isOrderedList) {
+    this.id = id;
     this.widgetName = widgetName;
     this.topicId = topicId;
-    this.id = id;
     this.type = type;
     this.widgetOrder = widgetOrder;
     this.text = text;
@@ -34,6 +43,10 @@ public class Widget {
     this.cssClass = cssClass;
     this.style = style;
     this.value = value;
+    this.isOrderedList = isOrderedList;
+  }
+
+  public Widget() {
   }
 
   public String getWidgetName() {
@@ -140,4 +153,31 @@ public class Widget {
   public void setValue(String value) {
     this.value = value;
   }
+
+  public Boolean getIsOrderedList() {
+    return isOrderedList;
+  }
+
+  public void setIsOrderedList(Boolean orderedList) {
+    this.isOrderedList = orderedList;
+  }
 }
+
+/*
+create table widgets (
+       id bigint not null auto_increment,
+        css_class varchar(255),
+        height integer,
+        size integer,
+        style varchar(255),
+        text varchar(255),
+        topic_id varchar(255),
+        type varchar(255),
+        url varchar(255),
+        value varchar(255),
+        widget_name varchar(255),
+        widget_order integer,
+        width integer,
+        primary key (id)
+    ) engine=InnoDB
+ */
